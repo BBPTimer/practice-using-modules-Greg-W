@@ -4,49 +4,55 @@ const argv = yargs(hideBin(process.argv)).argv;
 
 const chalk = require('chalk');
 
-let city = argv.city;
-let cityLowerCase = city.toLowerCase();
+class City {
+    constructor(name, temperature, conditions, humidity, wind) {
+        this.name = name,
+        this.temperature = temperature,
+        this.conditions = conditions,
+        this.humidity = humidity,
+        this.wind = wind
+    }
 
-if(cityLowerCase === "new york") {
-    console.log(`
-${chalk.blue.bold("===== WEATHER REPORT =====")}
-        
-${chalk.yellow.bold(`Location: ${city}`)}
-${chalk.green("Temperature: 72 F")}
-${chalk.blue("Conditions: Partly Cloudy")}
-${chalk.magenta("Humidity: 65")}
-${chalk.red("Wind Speed: 8")}
-        
-${chalk.blue.bold("==========================")}`);
+    reportWeather() {
+        console.log(chalk.blue.bold("===== WEATHER REPORT =====\n"));
+        console.log(chalk.yellow.bold("Location:", userCity));
+        console.log(chalk.green("Temperature:", this.temperature, "F"));
+        console.log(chalk.blue("Conditions:", this.conditions));
+        console.log(chalk.magenta("Humidity:", this.humidity));
+        console.log(chalk.red("Wind Speed:", this.wind));
+        console.log(chalk.blue.bold("\n=========================="));
+    }
+
 }
 
-else if(cityLowerCase === "london") {
-    console.log(`
-${chalk.blue.bold("===== WEATHER REPORT =====")}
-        
-${chalk.yellow.bold(`Location: ${city}`)}
-${chalk.green("Temperature: 60 F")}
-${chalk.blue("Conditions: Rainy")}
-${chalk.magenta("Humidity: 80")}
-${chalk.red("Wind Speed: 12")}
-        
-${chalk.blue.bold("==========================")}`);
+let cities = [];
+cities.push(new City("new york", 72, "Partly Cloudy", 65, 8));
+cities.push(new City("london", 60, "Rainy", 80, 12));
+cities.push(new City("paris", 0, "Unknown", 0, 0));
+
+let isCitySupported = false;
+let isInputAString = true;
+
+let userCity = argv.city;
+let userCityLowerCase = "";
+
+try {
+    userCityLowerCase = userCity.toLowerCase();
+}
+catch (e) {
+    console.error("City argument is not a string");
+    isInputAString = false;
 }
 
-else if(cityLowerCase === "paris") {
-    console.log(`
-${chalk.blue.bold("===== WEATHER REPORT =====")}
-        
-${chalk.yellow.bold(`Location: ${city}`)}
-${chalk.green("Temperature: 0 F")}
-${chalk.blue("Conditions: Unknown")}
-${chalk.magenta("Humidity: 0")}
-${chalk.red("Wind Speed: 0")}
-        
-${chalk.blue.bold("==========================")}`);
+for (let city of cities) {
+    if (userCityLowerCase === city.name) {
+        city.reportWeather();
+        isCitySupported = true;
+        break;
+    }
 }
 
-else {
+if (!isCitySupported && isInputAString) {
     console.log("City not supported");
 }
 
